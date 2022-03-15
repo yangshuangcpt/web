@@ -72,7 +72,7 @@ user_action			存放用户操作信息（日志）
 
 ### 一、实现更加丰富的查询功能
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/1.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/1.png) 
 
 从上图可以看到我在“标题关键字”和“内容关键字”的基础上还增加了“发布时间”和“来源”这两个查询功能，这两个功能默认可以都不选，这样就返回全部符合的数据，发布时间可以两个都选，也可以只选择一个，这样更能满足用户的需求。其中“发布时间”这个查询功能在实现的过程中存在一些难点，前端传回的时间格式为：Tue Sep 03 2020 00:00:00 GMT+0800 (中国标准时间)，这时就需要对格式进行处理，否则无法进行sql语句的查询，这需要其他的函数辅助：
 
@@ -97,7 +97,7 @@ request_url = request_url.substr(0,30);
 
 ### 二、在图表上添加查询功能
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/2.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/2.png) 
 
 如上图所示，折线图展现了关键词在新闻中出现次数的变化情况，我添加了关键词搜索功能，用户可以查看任意词语在时间上的热度，而非仅仅局限于"疫情"这一固定的词汇，而如果用户并不想输入词汇，我默认会直接显示"疫情"这一词汇的折线图。
 
@@ -109,11 +109,11 @@ request_url = request_url.substr(0,30);
 
 优化前的词云：
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/4.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/4.png) 
 
 优化后的词云：
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/3.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/3.png) 
 
 上面第一个图是优化词云之前的，使用了正则表达式去除无意义的字符，并使用了jieba分词，然后将结果放入词云，这样做的结果就是未能去除掉停用词，导致词云中最大的词语是"的"、"是"、"在"等常用但无意义的词，这样做出来的词云并不能展现太多的信息，所以我选择对其进行优化。最开始我准备使用加载停用词的方式来去除停用词，但nodejs在加载txt文档的操作上比较复杂，所以我直接用了nodejieba的自带功能提取关键词，我使用了nodejieba.extract语句对新闻的关键词进行抽取，每篇文章取排名前十的词语放入词云中。（事实上nodejieba也有stopword属性，但不知道为什么加载停用词之后几乎没有效果）。最终的结果如第二张图所示，关键词变为了"亿元"、"基金"、"巴菲特"、"公司"等财经词语（我爬取的为财经新闻），可见词云效果比之前要好。
 
@@ -125,7 +125,7 @@ request_url = request_url.substr(0,30);
 
 它展示了新闻发布数随着时间的变化（由于我只在个别的天数爬取了数据，所以这一结果事实上并不能真正显示出新闻发布数的实际情况，但功能是正常的）
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/10.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/10.png) 
 
 ### 四、增加管理员功能
 
@@ -139,7 +139,7 @@ request_url = request_url.substr(0,30);
 
 那么是如何设定管理员的呢？如果直接将管理员姓名写在代码中无疑是最简单的，但是如果后续要继续添加管理员那么每次都要修改源代码，这非常的不方便。所以我在数据库中新建了一个管理员的表格adminer，并在mysql中通过insert语句将管理员的姓名插入其中，每当用户想要查看管理员专区，系统就会判断他是否存在于管理员表格之中，如果是则会显示管理员专区，否则不会显示。虽然在mysql中通过insert语句增加管理员稍微复杂了一些，但是如果将增加管理员的功能暴露给前端管理员页面，那么每个管理员都可以无限制的添加别人为管理员，也会出现一些问题，所以我没有将添加管理员功能暴露给前端页面。
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/5.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/5.png) 
 
 ##### 2、管理员可以停用或开启注册功能
 
@@ -151,11 +151,11 @@ SELECT action from admin where actiontime=(select MAX(actiontime) from admin);
 
 管理员关闭注册功能：
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/6.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/6.png) 
 
 用户无法注册：
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/7.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/7.png) 
 
 ##### 3、查看所有用户的姓名信息
 
@@ -163,7 +163,7 @@ SELECT action from admin where actiontime=(select MAX(actiontime) from admin);
 
 显示用户姓名的功能主要是为了给后续搜索用户日志信息做铺垫的。如果管理员不知道用户姓名，则无法查看用户日志。
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/8.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/8.png) 
 
 ##### 4、搜索用户的日志信息
 
@@ -173,7 +173,7 @@ SELECT action from admin where actiontime=(select MAX(actiontime) from admin);
 
 根据用户名搜索日志：
 
-![Images](https://github.com/yangshuangcpt/yangshuangcpt.github.io/raw/master/final_project/images/9.png) 
+![Images](https://github.com/yangshuangcpt/web/raw/main/final_project/images/9.png) 
 
 
 
