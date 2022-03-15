@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<header>
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+</header>
+
+<body>
+    <div class="notboot">财经新闻时间热点查询</div>
+    <div>
+        <form>
+            <br> 查询内容：<input type="text" name="content_text" id="query1">
+            <br> 开始时间：<input type="date" name="publish_date1" id="query2">
+            <br> 结束时间：<input type="date" name="publish_date2" id="query3">
+            <br> <input class="form-submit" type="button" value="查询">
+        </form>
+    </div>
+    <div class="notboot" id="temp"></div>
+    <div class="cardLayout" style="margin: 10px 0px">
+        <table id="record3" class="tabtop13"></table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            //点击查询按钮之后会进行以下操作
+            $("input:button").click(function () {
+                $("#temp").append("查询词在每一天出现的次数")
+                $.get('/process_get2?content=' + $("#query1").val() + '&publish_date1=' + $("#query2").val() + '&publish_date2=' + $("#query3").val(), function (data) {
+                    $("#record3").empty();
+                    $("#record3").append('<tr><th>publish_date</th><th>number</th></tr>');
+                    for (let list of data) {
+                        let table = '<tr>';
+                        Object.values(list).forEach(element => {
+                            table += ('<td>' + element + '</td>');
+                        });
+                        $("#record3").append(table + '</tr>');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>

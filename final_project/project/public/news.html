@@ -1,0 +1,191 @@
+<!-- ng-app 指令定义一个 AngularJS 应用程序。 -->
+<html ng-app="news">
+<head>
+    <meta charset="utf-8">
+    <title>News</title>
+
+    <!-- bootstrap4 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/dist/echarts.min.js"></script>
+    <!-- <script type="text/javascript" src=https://cdn.jsdelivr.net/npm/echarts@5.1.2/dist/echarts.min.js></script> -->
+    <script src='javascripts/dist/echarts-wordcloud.min.js'></script>
+
+    <!-- <script src="echarts-wordcloud.min.js"></script> -->
+    <!-- angular -->
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="javascripts/news.js" type="text/javascript"></script>
+</head>
+
+ <!-- ng-controller 指令定义了应用程序控制器。 -->
+<body ng-controller="news_Ctrl" ng-init="chartShow=true;searchShow=true;keyshow=true;adminshow=true">
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand">Navbar</a>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" ng-click="showSearch()" href="#">检索</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          图片
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#" ng-click="histogram()">柱状图</a>
+          <a class="dropdown-item" href="#" ng-click="line()">折线图</a>
+          <a class="dropdown-item" href="#" ng-click="wordcloud()">词云</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">账号管理</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#"  ng-click="admin()">管理员界面</a>
+          <a class="dropdown-item" href="#"  ng-click="logout()">退出登录</a>
+        </div>
+      </li>
+    </ul>
+    <!-- <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form> -->
+  </div>
+</nav>
+
+<!--    所有的图片都绘制在main1位置-->
+
+<div ng-hide="keyshow" id="linekey" style="position:relative; top:50px;left: 80px">
+  <form>
+    <div class="form-row">
+      <label class="form-group col-md-1 control-label">请输入关键词：</label>
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control"  placeholder="疫情" ng-model="$parent.keyword1">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="searchkey()">查询</button>
+    </div>
+  </form>
+</div>
+
+<div class="alert alert-warning" ng-if="msg && msg!='ok'" style="width: 800px;height:50px;position:relative; top:10px;left: 80px">
+  <a href="#" class="close" data-dismiss="alert">&times;</a>
+  <strong>提示！</strong>{{msg}}
+</div>
+
+<div ng-hide="adminshow" style="width: 1300px;height:500px;position:relative; top:40px;left: 80px">
+  <form>
+    <div class="form-row">
+      <label style="padding-right:30px;">是否停用注册功能</label>
+      <div  style="padding-right:30px;"><button type="button" class="btn btn-primary" ng-click="stopregister()">停用注册功能</button></div>
+      <button type="button" class="btn btn-primary" ng-click="openregister()">开启注册功能</button>
+    </div>
+    <br/>
+    <button type="button" class="btn btn-primary" ng-click="searchalluser()">查询当前所有用户名称</button>
+    <br/>
+    <br/>
+    <div class="form-row">
+      <label class="form-group col-md-1 control-label">用户名：</label>
+        <div class="form-group col-md-4">
+          <input type="text" class="form-control"  ng-model="$parent.username1">
+        </div>
+        <div style="padding-right:30px;"><button type="button" class="btn btn-primary" ng-click="searchuserlog()">查询</button></div>
+    </div>
+  </form>
+
+  <div ng-show="adminusername">
+    <p>所有用户名单</p>
+    <table class="table table-striped">
+      <thead>
+          <tr>
+              <td>序号</td>
+              <td>用户名</td>
+              <td>注册时间</td>
+          </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="(namekey, nameitem) in nameitems">
+          <td>{{nameindex+namekey}}</td>
+          <td>{{nameitem.username}}</td>
+          <td>{{nameitem.registertime}}</td>
+      </tr>
+      </tbody>
+  </table>
+  <div>
+      <div class="float-right">
+          <nav aria-label="Page navigation example">
+          <ul class="pagination">
+              <li class="page-item"><a class="page-link" ng-click="namePrevious()" role="button">Previous</a></li>
+              <li class="page-item" ng-repeat="namepage in namepageList" ng-class="{active:nameisActivePage(namepage)}" role="button"><a class="page-link" ng-click="nameselectPage(namepage)">{{ namepage }}</a></li>
+              <li class="page-item"><a class="page-link" ng-click="nameNext()" role="button">Next</a></li>
+          </ul>
+      </nav>
+    </div>
+  </div>
+  </div>
+
+
+  <!-- 显示管理员查询结果 -->
+<div ng-show="adminuseraction">
+  <br/>
+  <br/>
+  <p>所选用户的日志</p>
+  <table class="table table-striped">
+      <thead>
+          <tr>
+              <td>序号</td>
+              <td>用户名</td>
+              <td>请求时间</td>
+              <td>请求操作</td>
+              <td>请求地址</td>
+              <td>状态</td>
+              <td>远程地址</td>
+          </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="(key, item) in items">
+          <td>{{index+key}}</td>
+          <td>{{item.username}}</td>
+          <td>{{item.request_time}}</td>
+          <td>{{item.request_method}}</td>
+          <td>{{item.request_url}}</td>
+          <td>{{item.status}}</td>
+          <td>{{item.remote_addr}}</td>
+      </tr>
+      </tbody>
+  </table>
+  <div>
+      <div class="float-left" style="margin-top: 12px;">
+          <button type="submit" class="btn btn-primary" ng-click="searchlogsortASC()" >按时间升序</button>
+          <button type="submit" class="btn btn-primary" ng-click="searchlogsortDESC()">按时间降序</button>
+      </div>
+      <div class="float-right">
+          <nav aria-label="Page navigation example">
+          <ul class="pagination">
+              <li class="page-item"><a class="page-link" ng-click="Previous()" role="button">Previous</a></li>
+              <li class="page-item" ng-repeat="page in pageList" ng-class="{active:isActivePage(page)}" role="button"><a class="page-link" ng-click="selectPage(page)">{{ page }}</a></li>
+              <li class="page-item"><a class="page-link" ng-click="Next()" role="button">Next</a></li>
+          </ul>
+          </nav>
+      </div>
+  </div>
+  <br/>
+  <br/>
+</div>
+</div>
+
+
+
+<div ng-hide="chartShow">
+  <span  id="main1" style="width: 800px;height:500px;position:fixed; top:50px;left:80px" ></span>
+</div>
+
+<div ng-hide="searchShow" style="width: 1300px;position:relative; top:70px;left: 80px">
+    <!--    查询页面-->
+    <div ng-include="'search.html'"></div>
+</div>
+</body>
+
+</html>

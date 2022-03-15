@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<header>
+    <link href="./style.css" rel="stylesheet" type="text/css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <link href="http://www.itxst.com/package/bootstrap-table-1.14.1/bootstrap-4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://www.itxst.com/package/bootstrap-table-1.14.1/bootstrap-table-1.14.1/bootstrap-table.css" rel="stylesheet" />
+    <script src="http://www.itxst.com/package/bootstrap-table-1.14.1/bootstrap-table-1.14.1/bootstrap-table.js"></script>
+</header>
+
+<body>
+    <div class="notboot">财经新闻查询</div> 
+    <div>
+    <form>
+        标题：<input type="text" name="title_text" id="query1"> 时间：<input type="date" name="publish_date" id="query2"> <input class="form-submit" type="button" value="查询">
+    </form>
+    </div>
+    <!-- <div class="cardLayout" style="margin: 10px 0px"> -->
+        <!-- <table width="100%" id="record2" class="tabtop13"></table> -->
+    <table width="100%" id="record2"></table>
+    </div>
+    <script>
+        $(document).ready(function() {
+            //点击查询按钮之后会进行以下操作
+            $("input:button").click(function() {
+                $.get('/process_get1?title=' + $("#query1").val() + '&publish_date=' + $("#query2").val(), function(data) {
+                    // $("#record2").empty();
+                    // $("#record2").append('<tr class="cardLayout"><th>number</th><th>url</th><th>source_name</th>' +
+                    //     '<th>title</th><th>publish_date</th></tr>');
+                    // var num_count = 0;
+                    // for (let list of data) {
+                    //     let table = '<tr class="cardLayout">';
+                    //     table += ('<td>'+ (++num_count) + '</td>');
+                    //     Object.values(list).forEach(element => {
+                    //         table += ('<td>'+ element + '</td>');
+                    //     });
+                    //     $("#record2").append(table + '</tr>');
+                    // }
+                    $("#record2").bootstrapTable({
+                    search:false,		//加上搜索控件						
+                    method: 'get',		//请求方式
+                    cache: false,       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                    pagination: true,   //是否显示分页（*）
+                    sortable: true,    //是否启用排序
+                    sortOrder: "asc",   //排序方式
+                    striped: true,      //是否显示行间隔色
+                    uniqueId: "url", //每一行的唯一标识，一般为主键列
+                    pageSize: 5,        //每页的记录行数
+                    sidePagination : 'client',              
+                    columns:[{
+                        field:'url',
+                        title:'链接'
+                    },{
+                        field:'source_name',
+                        title:'来源'
+                    },{
+                        field:'title',
+                        title:'标题'
+                    },{
+                        field:'publish_date',
+                        title:'发表日期'
+                    }],
+                    data: data,
+                    });
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>
